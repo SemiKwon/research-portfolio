@@ -1,0 +1,686 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Research and Engineering</title>
+<meta name="description" content="제한된 자원에서도 실행 가능한 AI 모델과 시스템을 만드는 엔지니어">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+:root{
+  --accent:#2563EB; --accent-soft:#E3ECFD; --accent-ink:#1D4ED8; --accent-mid:#9DBBF6;
+  --navy:#1E3A8A; --tok:#EDF1F7; --tok-line:#D3DCEA;
+  --bg:#FFFFFF; --bg-alt:#F5F7FB; --card:#FFFFFF;
+  --ink:#141A26; --ink-2:#4F5868; --ink-3:#8A93A3; --line:#E2E7EF;
+  --shadow:0 1px 2px rgba(16,24,40,.04),0 8px 24px rgba(16,24,40,.05);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --accent:#5B8DEF; --accent-soft:#16233F; --accent-ink:#9DBDFB; --accent-mid:#2F4A80;
+    --navy:#8FA9E6; --tok:#232936; --tok-line:#343C4C;
+    --bg:#0F1218; --bg-alt:#151A22; --card:#1A1F29;
+    --ink:#EEF1F6; --ink-2:#B2BAC7; --ink-3:#7B8494; --line:#2A303C;
+    --shadow:none;
+  }
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{font-family:Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  background:var(--bg);color:var(--ink);line-height:1.65;word-break:keep-all;-webkit-font-smoothing:antialiased}
+body.lb-open{overflow:hidden}
+a{color:inherit}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+
+nav{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 88%,transparent);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+.logo{font-weight:800;letter-spacing:-.02em;text-decoration:none}
+.logo b{color:var(--accent)}
+nav ul{display:flex;gap:22px;list-style:none;font-size:14px;font-weight:600;color:var(--ink-2)}
+nav ul a{text-decoration:none}
+nav ul a:hover{color:var(--accent)}
+
+.hero{padding:88px 0 64px}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:.14em;color:var(--accent)}
+.hero h1{font-size:clamp(30px,5vw,50px);line-height:1.22;letter-spacing:-.035em;font-weight:800;margin:14px 0 22px}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero .lead{font-size:17px;color:var(--ink-2);max-width:820px}
+.hero .lead + .lead{margin-top:12px}
+.toc{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:44px}
+.toc a{display:block;text-decoration:none;padding:24px;border:1px solid var(--line);border-radius:16px;
+  background:var(--card);box-shadow:var(--shadow);transition:transform .15s,border-color .15s}
+.toc a:hover{transform:translateY(-3px);border-color:var(--accent)}
+.toc .num{font-size:13px;font-weight:800;letter-spacing:.1em;color:var(--accent)}
+.toc h3{font-size:19px;margin:6px 0 8px;letter-spacing:-.02em}
+.toc p{font-size:14px;color:var(--ink-2)}
+
+section.block{padding:84px 0;border-top:1px solid var(--line)}
+section.block.alt{background:var(--bg-alt)}
+.s-head{margin-bottom:36px}
+.s-head .tag{display:inline-block;font-size:13px;font-weight:700;letter-spacing:.08em;color:var(--accent);margin-bottom:8px}
+.s-head h2{font-size:clamp(25px,3.4vw,34px);letter-spacing:-.03em;line-height:1.3}
+.s-head p{margin-top:12px;color:var(--ink-2);max-width:840px}
+h3.sub{display:flex;align-items:baseline;gap:10px;font-size:21px;letter-spacing:-.02em;margin:60px 0 18px}
+h3.sub .n{font-size:14px;font-weight:800;color:var(--accent)}
+.s-head + h3.sub{margin-top:0}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.chip{font-size:13px;padding:5px 12px;border-radius:999px;background:var(--accent-soft);color:var(--accent-ink);font-weight:600}
+.chip.g{background:transparent;border:1px solid var(--line);color:var(--ink-2)}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.grid2>*,.grid3>*,.grid4>*,.case>*,.stage>*,.res>*{min-width:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;box-shadow:var(--shadow)}
+.card h4{font-size:15px;color:var(--accent);margin-bottom:10px;font-weight:700}
+.card h5{font-size:16px;margin-bottom:6px;letter-spacing:-.01em}
+ul.dot{list-style:none}
+ul.dot li{position:relative;padding-left:14px;margin:6px 0;color:var(--ink-2);font-size:15px}
+ul.dot li::before{content:"";position:absolute;left:0;top:.72em;width:5px;height:5px;border-radius:50%;background:var(--accent)}
+ul.dot li b{color:var(--ink)}
+.card p{color:var(--ink-2);font-size:15px}
+.card p b{color:var(--ink)}
+.mt{margin-top:20px}
+
+.ov{display:grid;grid-template-columns:120px 1fr;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--card);box-shadow:var(--shadow)}
+.ov dt,.ov dd{padding:14px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center}
+.ov dt{justify-content:center;text-align:center;font-weight:700;font-size:14px;color:var(--accent-ink);background:var(--accent-soft)}
+.ov dd{font-size:15px;color:var(--ink-2)}
+.ov dd b{color:var(--ink);margin-left:3px;margin-right:3px}
+.ov dt:last-of-type,.ov dd:last-of-type{border-bottom:0}
+.role{margin-top:18px;padding:16px 20px;border-left:4px solid var(--accent);background:var(--card);border-radius:0 12px 12px 0;color:var(--ink-2);font-size:15px}
+.role b{color:var(--ink)}
+
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--card);box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:11px 12px;text-align:center;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--accent-soft);color:var(--accent-ink);font-weight:700}
+td:first-child,th:first-child{text-align:left}
+tr:last-child td{border-bottom:0}
+tr.ours td{background:color-mix(in srgb,var(--accent-soft) 50%,transparent)}
+td.best{font-weight:800;color:var(--accent-ink)}
+.note{font-size:13px;color:var(--ink-3);margin-top:10px}
+.tbl-t{font-size:14px;color:var(--ink);margin:0 0 10px;font-weight:700}
+
+.pubs{display:flex;flex-direction:column;gap:14px}
+.pub{display:grid;grid-template-columns:170px 1fr;gap:18px;align-items:center;padding:20px 22px;
+  background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+.pub .when{font-size:13px;font-weight:700;color:var(--ink-3)}
+.pub .venue{font-weight:800;font-size:15px;color:var(--accent-ink);margin-top:2px}
+.pub .title{font-size:16px;font-weight:700;letter-spacing:-.01em}
+.pub .badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+
+.courses{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.course{padding:14px 18px;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+.course b{display:block;font-size:15px}
+.course span{font-size:13px;color:var(--ink-2)}
+
+.stages{display:flex;flex-direction:column;gap:20px}
+.stage{display:grid;grid-template-columns:64px 1fr;gap:18px}
+.stage .idx{display:flex;flex-direction:column;align-items:center}
+.stage .idx span{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-weight:800;color:#fff;background:var(--accent);flex:none}
+.stage .idx i{flex:1;width:2px;background:var(--line);margin-top:8px}
+.stage:last-child .idx i{display:none}
+.stage .card .venue{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px}
+.stage .card h5{font-size:18px}
+.limit{margin-top:14px;padding:12px 16px;border-radius:10px;background:var(--bg-alt);font-size:14px;color:var(--ink-2)}
+.limit b{color:var(--accent-ink)}
+.gain{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:14px}
+.gain div{padding:7px 13px;border-radius:10px;background:var(--accent-soft);color:var(--accent-ink);font-weight:700;font-size:14px}
+.gain .base{background:transparent;border:1.5px solid var(--accent-mid);color:var(--accent-ink);font-weight:600;font-size:13px}
+
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:var(--shadow)}
+.kpi .v{font-size:22px;white-space:nowrap;font-weight:800;letter-spacing:-.03em;color:var(--accent);line-height:1.2}
+.kpi .l{font-size:13px;color:var(--ink);font-weight:700;margin-top:6px}
+.kpi p{font-size:13.5px;color:var(--ink-2);margin-top:4px}
+.kpi.muted .v{color:var(--ink-3)}
+
+/* diagrams */
+.dg{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:var(--shadow);overflow-x:auto}
+.dg.flat{padding:0;border:0;box-shadow:none;background:transparent}
+.dg svg{display:block;width:100%;height:auto}
+.sv text{fill:var(--ink);font-family:inherit}
+.sv .t2{fill:var(--ink-2)} .sv .t3{fill:var(--ink-3)} .sv .acc-t{fill:var(--accent-ink)} .sv .on-acc{fill:#fff}
+.sv .bx{fill:var(--card);stroke:var(--line);stroke-width:1.5}
+.sv .bx-a{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.8}
+.sv .bx-s{fill:var(--bg-alt);stroke:var(--line);stroke-width:1.5}
+.sv .bx-dash{fill:var(--card);stroke:var(--ink-3);stroke-width:1.5;stroke-dasharray:6 5}
+.sv .chip-s{fill:var(--bg-alt);stroke:var(--line)}
+.sv .acc{fill:var(--accent)} .sv .acc-tok{fill:var(--accent)}
+.sv .tok{fill:var(--tok);stroke:var(--tok-line)} .sv .tok-m{fill:var(--accent-mid)}
+.sv .h1{fill:color-mix(in srgb,var(--accent) 22%,var(--tok))} .sv .h2{fill:color-mix(in srgb,var(--accent) 50%,var(--tok))} .sv .h3{fill:var(--accent)}
+.sv .seg1{fill:color-mix(in srgb,var(--accent) 16%,var(--card))} .sv .seg2{fill:color-mix(in srgb,var(--accent) 28%,var(--card))} .sv .seg3{fill:color-mix(in srgb,var(--accent) 40%,var(--card))}
+.sv .gt{fill:var(--navy)} .sv .miss{fill:var(--tok-line)}
+.sv .band{fill:color-mix(in srgb,var(--accent) 9%,transparent)}
+.sv .bonus{fill:color-mix(in srgb,var(--accent) 22%,transparent);stroke:none}
+.sv .ln{stroke:var(--ink-3);stroke-width:1.8;fill:none} .sv .ln-a{stroke:var(--accent);stroke-width:2;fill:none}
+.sv .ln-d{stroke:var(--ink-3);stroke-width:1.5;fill:none}
+.sv .ax{stroke:var(--ink-3);stroke-width:1.4;fill:none}
+.sv .c-raw{stroke:var(--ink-3);stroke-width:2;fill:none} .sv .c-acc{stroke:var(--accent);stroke-width:3;fill:none}
+.sv .thr{stroke:var(--ink-2);stroke-width:1.6} .sv .rec{stroke:var(--accent);stroke-width:1.6}
+.ah{fill:var(--ink-3)}
+figure{margin:0}
+figcaption{font-size:13px;color:var(--ink-3);margin-top:10px;text-align:center}
+
+.shot{position:relative;display:block;width:100%;background:#fff;border:1px solid var(--line);border-radius:14px;
+  box-shadow:var(--shadow);cursor:zoom-in;overflow:hidden;transition:border-color .15s,transform .15s}
+.shot:hover{border-color:var(--accent);transform:translateY(-2px)}
+.shot img{display:block;width:100%;height:auto}
+.shot .zoom{position:absolute;right:10px;bottom:10px;display:flex;align-items:center;gap:5px;
+  font-size:12px;font-weight:600;color:#fff;background:rgba(15,20,30,.72);padding:5px 10px;border-radius:999px;pointer-events:none}
+.shot .zoom svg{width:13px;height:13px}
+.img-err{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:160px;
+  padding:24px;text-align:center;border:1.5px dashed var(--accent);border-radius:14px;background:var(--accent-soft);
+  color:var(--accent-ink);font-size:14px;font-weight:700}
+.img-err code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;color:var(--ink)}
+.lb{position:fixed;inset:0;z-index:100;display:none;flex-direction:column;align-items:center;justify-content:center;
+  padding:24px 16px;background:rgba(8,10,16,.88);cursor:zoom-out}
+.lb.on{display:flex}
+.lb img{max-width:min(1500px,100%);max-height:calc(100vh - 110px);object-fit:contain;border-radius:8px;background:#fff;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.lb p{color:#E8E8EC;font-size:14px;margin-top:14px;text-align:center;max-width:900px}
+.lb button{position:absolute;top:14px;right:16px;width:40px;height:40px;border:0;border-radius:50%;
+  background:rgba(255,255,255,.14);color:#fff;font-size:22px;cursor:pointer}
+
+.bars{display:flex;flex-direction:column;gap:9px}
+.bar .row{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:3px}
+.bar .row b{color:var(--ink)}
+.track{height:9px;border-radius:99px;background:var(--tok);overflow:hidden}
+.fill{height:100%;border-radius:99px;background:var(--accent)}
+.fill.n{background:var(--ink-3)}
+.bar-t{font-size:13px;color:var(--ink-2);margin:0 0 8px;font-weight:700}
+
+.res{display:grid;grid-template-columns:1.2fr 1fr;gap:20px;align-items:stretch}
+.res .col{display:flex;flex-direction:column;gap:16px}
+.res .eff{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:18px 20px;flex:1}
+
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.stepc{position:relative;padding:22px 22px 18px;border-radius:16px;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow)}
+.stepc .no{display:inline-flex;width:28px;height:28px;border-radius:50%;align-items:center;justify-content:center;
+  background:var(--accent);color:#fff;font-weight:800;font-size:14px;margin-right:8px}
+.stepc h5{display:flex;align-items:center;font-size:16px;margin-bottom:10px;letter-spacing:-.01em}
+.stepc.alt{border-style:dashed;box-shadow:none}
+.stepc.alt .no{background:var(--ink-3)}
+.stepc ul.dot li{font-size:14px;margin:5px 0}
+
+.kv{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.kv div{display:flex;justify-content:space-between;gap:12px;align-items:baseline;padding:12px 16px;border:1px solid var(--line);border-radius:12px;background:var(--card);font-size:14px}
+.kv span{color:var(--ink-2)}
+.kv b{color:var(--accent-ink);white-space:nowrap}
+.kv .wide{grid-column:span 2}
+.fine{font-size:13px;color:var(--ink-3);margin-top:12px;line-height:1.7}
+
+.stack-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.stack-row{padding:14px 18px;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+.stack-row b{display:block;font-size:13px;color:var(--accent-ink);margin-bottom:6px}
+.stack-row .pills{display:flex;flex-wrap:wrap;gap:6px}
+.stack-row .pills span{font-size:13px;padding:3px 10px;border-radius:999px;background:var(--bg-alt);color:var(--ink-2);border:1px solid var(--line)}
+
+.cases{display:flex;flex-direction:column;gap:20px}
+.case{display:grid;grid-template-columns:1fr 1.1fr;gap:24px;align-items:center}
+.case-tag{display:inline-block;font-size:12px;font-weight:800;padding:3px 10px;border-radius:6px;background:var(--navy);color:#fff;margin-bottom:8px}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .case-tag{color:#0F1218}}
+.mini{display:flex;gap:10px;margin-top:14px}
+.mini .kpi{flex:1;padding:14px 16px}
+.mini .kpi .v{font-size:24px}
+.kv div{flex-wrap:wrap}
+.disclaimer{margin-top:24px;padding:14px 18px;border:1px dashed var(--line);border-radius:12px;font-size:13px;color:var(--ink-3)}
+
+footer{padding:32px 0;border-top:1px solid var(--line);text-align:center}
+.copy{font-size:13px;color:var(--ink-3)}
+
+@media (max-width:900px){
+  .grid4{grid-template-columns:1fr 1fr}
+  .steps{grid-template-columns:1fr 1fr}
+  .kv{grid-template-columns:1fr 1fr}
+}
+@media (max-width:820px){
+  .toc,.grid2,.grid3,.courses,.case,.res,.steps{grid-template-columns:1fr}
+  .kv{grid-template-columns:1fr}.kv .wide{grid-column:auto}
+  .pub{grid-template-columns:1fr;gap:6px}
+  .ov{grid-template-columns:84px 1fr}
+  .ov dt,.ov dd{padding:12px 14px}
+  .stage{grid-template-columns:40px 1fr;gap:12px}
+  .stage .idx span{width:34px;height:34px}
+  .hero .lead br{display:none}
+  nav ul{display:none}
+  .hero{padding:60px 0 44px}
+  section.block{padding:60px 0}
+  .dg{padding:14px}
+  .res .eff{grid-template-columns:1fr}
+}
+@media (max-width:480px){.grid4{grid-template-columns:1fr}}
+@media (max-width:820px){.dg:has(svg[style]) + figcaption::before,.dg:has(svg[style])::after{}.dg:has(svg[style]) + figcaption::before{content:"← 옆으로 밀어서 전체 보기 →";display:block;font-weight:700;color:var(--accent-ink);margin-bottom:2px}}
+</style>
+<script>
+function imgFail(img){
+  var el = img.closest('.shot') || img;
+  el.outerHTML = '<div class="img-err">이미지를 불러오지 못했습니다<code>' + img.getAttribute('src') + '</code></div>';
+}
+</script>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ah"/></marker>
+</defs></svg>
+
+<nav>
+  <div class="wrap">
+    <a class="logo" href="#top">Portfolio<b>.</b></a>
+    <ul>
+      <li><a href="#summary">연구 성과</a></li>
+      <li><a href="#r1">Research 1</a></li>
+      <li><a href="#r2">Research 2</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div class="eyebrow">AI RESEARCH AND ENGINEERING</div>
+    <h1>제한된 자원에서도 <em>실행 가능한</em><br>AI 모델과 시스템을 만드는 엔지니어</h1>
+    <p class="lead">비디오 시간 구간 탐색(Video Moment Retrieval)을 연구하며<br>‘대표 프레임 선택 → 자연어 시간 맥락 표현 → 비디오 표현 압축’으로 문제를 단계적으로 확장했고, 학술 성과 3건을 달성했습니다.</p>
+    <p class="lead">산학 과제에서는 공연 영상 하이라이트 탐색 파이프라인 구현을 담당했으며,<br>과제에서 확인한 <b style="color:var(--ink)">하이라이트 장면이 중간에 끊기는 문제</b>를 다중 시계열 신호 융합과 E2E 프로토타입 개발 후속 개인 프로젝트로 확장했습니다.</p>
+
+    <div class="toc">
+      <a href="#r1">
+        <div class="num">RESEARCH 01</div>
+        <h3>제한된 자원에서의 비디오 구간 탐색 연구</h3>
+        <p>단일 GPU · mIoU 62.81 · 1저자 논문 3편</p>
+      </a>
+      <a href="#r2">
+        <div class="num">RESEARCH 02</div>
+        <h3>공연 영상 하이라이트 클립 자동 출력</h3>
+        <p>다중 신호 융합 · E2E 프로토타입 · Recall 87.5% / Precision 93.3%</p>
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- ================= 1. SUMMARY ================= -->
+<section class="block alt" id="summary">
+  <div class="wrap">
+    <div class="s-head">
+      <span class="tag">01 · SUMMARY</span>
+      <h2>연구 성과 요약</h2>
+    </div>
+
+    <h3 class="sub"><span class="n">1.1</span>논문 및 학술 성과</h3>
+    <div class="pubs">
+      <div class="pub">
+        <div><div class="when">2025.12</div><div class="venue">한국방송미디어공학회 논문지 (KCI)</div></div>
+        <div><div class="title">State Space Model based Temporal Adaptive Token Compression for Efficient Multimodal Large Language Model</div>
+          <div class="badges"><span class="chip">1저자</span></div></div>
+      </div>
+      <div class="pub">
+        <div><div class="when">2025.09</div><div class="venue">IEEE ICIP 2025</div></div>
+        <div><div class="title">Lightweight Temporal Contextual Fine Tuning Method of Large Multimodal Model for Video Moment Retrieval</div>
+          <div class="badges"><span class="chip">1저자</span></div></div>
+      </div>
+      <div class="pub">
+        <div><div class="when">2024.11</div><div class="venue">한국방송미디어공학회 추계학술대회</div></div>
+        <div><div class="title">사전학습된 이미지 언어 모델을 활용한 효율적인 비디오 시간적 연계성 학습</div>
+          <div class="badges"><span class="chip">1저자</span><span class="chip">최우수상</span></div></div>
+      </div>
+    </div>
+
+    <h3 class="sub"><span class="n">1.2</span>주요 프로젝트</h3>
+    <div class="grid2">
+      <div class="card">
+        <div class="meta" style="margin:0 0 10px"><span class="chip">산학</span><span class="chip g">2024.07 – 2025.07</span></div>
+        <h5>한국콘텐츠진흥원 과제</h5>
+        <p>사전학습된 VLM(Video-Language Model) VideoLLaMA 2 기반 하이라이트 파이프라인 구현 및 평가</p>
+      </div>
+      <div class="card">
+        <div class="meta" style="margin:0 0 10px"><span class="chip">개인</span><span class="chip g">2025.12 – 2026.06</span></div>
+        <h5>후속 확장 연구</h5>
+        <p>Qwen2.5-Omni가 제안한 의미 후보 및 오디오, 얼굴 감지, 모션 시계열 신호 융합 E2E 전체 프로토타입 구현</p>
+      </div>
+    </div>
+
+    <h3 class="sub"><span class="n">1.3</span>이수 교과</h3>
+    <div class="courses">
+      <div class="course"><b>인공지능개론</b><span>AI 핵심 원리와 데이터 기반 머신러닝 모델링 및 최적화 기초</span></div>
+      <div class="course"><b>딥러닝</b><span>CNN, Transformer 등 신경망 구조와 모델 훈련 및 성능 평가</span></div>
+      <div class="course"><b>딥러닝과자연어처리</b><span>트랜스포머 기반 언어 모델 구조와 멀티모달 크로스 어텐션 원리</span></div>
+      <div class="course"><b>영상부호화</b><span>DCT · 주파수 변환 기반 비디오 압축 원리와 AI 프레임 특징 경량화</span></div>
+      <div class="course"><b>인공지능융합기반시스템개론</b><span>Pruning · Distillation · 양자화 경량화 및 분산 서빙 최적화</span></div>
+      <div class="course"><b>AI융합프로젝트 I / II</b><span>전처리부터 학습 · 평가까지 전 주기 파이프라인 설계 및 특허 출원</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 2. RESEARCH 1 ================= -->
+<section class="block" id="r1">
+  <div class="wrap">
+    <div class="s-head">
+      <span class="tag">02 · RESEARCH 1</span>
+      <h2>제한된 자원에서의 비디오 구간 탐색 연구</h2>
+    </div>
+
+    <dl class="ov">
+      <dt>문제</dt><dd><span>비디오 언어 모델의 시간 이해 능력을 높이면서 <b>단일 GPU에서 학습 가능한 구조</b> 설계</span></dd>
+      <dt>접근</dt><dd>대표 프레임 선택 → 범주형 자연어 시간 맥락 표현 → 비디오 표현 압축</dd>
+      <dt>결과</dt><dd><b>mIoU 62.81 · R1@0.5 71.96 · R1@0.7 46.64</b></dd>
+      <dt>산출물</dt><dd>1저자 논문 3편 (추계학술대회 최우수상, IEEE ICIP 2025, KCI 논문지)</dd>
+    </dl>
+    <div class="role"><b>역할</b> — 1저자로 문제 정의부터 모델 구축, 압축 모듈 구현, 단일 GPU 학습 최적화, 성능 · 연산량 분석, 논문 작성까지 전 과정 수행</div>
+
+    <h3 class="sub"><span class="n">2.1</span>문제 정의와 평가 환경</h3>
+    <div class="grid3">
+      <div class="card"><h4>Task</h4><h5>Video Moment Retrieval</h5><p>비디오에서 자연어 질의에 해당하는 시작과 종료 시점을 찾아내는 태스크</p></div>
+      <div class="card"><h4>Dataset</h4><h5>Charades-STA</h5>
+        <ul class="dot"><li>평균 영상 길이 30.6초 · 정답 구간 8.1초</li><li>평균 질의 길이 7.22 단어</li><li>학습·검증 12,408 / 테스트 3,720</li></ul></div>
+      <div class="card"><h4>Metrics</h4>
+        <ul class="dot"><li><b>mIoU</b><br>예측 구간과 정답 구간의 평균 중첩도</li><li><b>R1@0.5 / R1@0.7</b><br>Top-1 예측의 IoU가 각각 0.5, 0.7 이상인 비율</li></ul></div>
+    </div>
+
+    <figure class="mt">
+      <div class="shot"><img src="images/r1-architecture.jpg" alt="전체 모델 구조도" loading="lazy" onerror="imgFail(this)"></div>
+      <figcaption>Figure 1. 전체 모델 구조도</figcaption>
+    </figure>
+
+    <h3 class="sub"><span class="n">2.2–2.4</span>단계적 문제 확장</h3>
+    <div class="stages">
+      <div class="stage">
+        <div class="idx"><span>1</span><i></i></div>
+        <div class="card">
+          <div class="venue"><span class="chip">추계학술대회 2024.11</span><span class="chip">최우수상</span></div>
+          <h5>비디오 데이터 전처리 및 프레임 간 관계 학습</h5>
+          <p>BLIP-2는 각 프레임을 중첩된 시퀀스로 처리하기 때문에, 영상의 연속성과 장면 전환을 반영하는 방식을 채택했습니다.</p>
+          <ul class="dot" style="margin-top:12px">
+            <li>프레임 특징을 코사인 유사도 기준으로 16개 구간에 군집화(Dynamic Programming Clustering)하고, 군집 중심점을 대표 프레임으로 선택<br>→ 동일한 16프레임에서 정보량 증가</li>
+            <li>BLIP-2 비전 인코더 뒤에 프레임 간 어텐션(temporal attention) 모듈을 삽입해 시간적 연속성과 장면 전환 정보 학습</li>
+          </ul>
+          <div class="gain"><div class="base">균등 16프레임 샘플링 · 모듈 미적용 대비</div><div>mIoU +4.10%p</div><div>R1@0.5 +5.36%p</div><div>R1@0.7 +7.74%p</div></div>
+          <div class="limit"><b>한계</b> 프레임 선택 전처리와 추가 모듈로 연산량 및 처리 비용 증가</div>
+        </div>
+      </div>
+      <div class="stage">
+        <div class="idx"><span>2</span><i></i></div>
+        <div class="card">
+          <div class="venue"><span class="chip">IEEE ICIP 2025.09</span></div>
+          <h5>자연어 범주형 시간 맥락 표현과 경량 파인튜닝</h5>
+          <ul class="dot">
+            <li>텍스트 중심으로 사전학습된 LLM은 숫자형 시간 정보보다 자연어로 표현된 범주형 정보를 더 효과적으로 활용할 것이라는 가설을 세웠습니다.</li>
+            <li>질의의 상대적 위치를 순서형 범주로 구조화하고 영상 길이 · 지시문과 결합한 <b>시간적 맥락 프롬프트</b> 설계</li>
+            <li>BLIP-2에 4-bit 양자화와 Q-LoRA를 적용해 단일 GPU에서 파인튜닝</li>
+          </ul>
+          <div class="gain"><div class="base">비교 모델(Mr.BLIP) 대비</div><div>mIoU 62.41 (+3.78%p)</div><div>R1@0.5 70.16 (+0.85%p)</div></div>
+          <div class="limit"><b>한계</b> 장면의 전반적인 위치 파악에는 효과적이었으나, 정밀한 경계를 평가하는 R1@0.7은 44.06에 그침</div>
+        </div>
+      </div>
+      <div class="stage">
+        <div class="idx"><span>3</span><i></i></div>
+        <div class="card">
+          <div class="venue"><span class="chip">KCI 논문지 2025.12</span></div>
+          <h5>시간 적응형 표현 압축 (STAC)</h5>
+          <p>선행 연구의 한계를 바탕으로 <b>정밀한 시간 관계 학습</b>과 <b>LLM 입력 토큰 수 감축</b>이라는 두 방향을 종합해 모듈을 구축했습니다.</p>
+          <ul class="dot" style="margin-top:12px">
+            <li>Q-Former의 비디오 표현이 Language Projection을 거쳐 고비용 LLM 연산으로 전달되는 구조에 주목, 두 모듈 사이를 압축 지점으로 설정</li>
+            <li>선택적 상태 공간 모델 Mamba로 프레임 간 시간 관계를 모델링한 뒤, 학습형 어텐션 쿼리로 추출한 요약 벡터를 MLP에 통과시켜 중요도 점수 산출 → 시간적 중요도가 높은 50%로 압축</li>
+            <li>ToMe는 유사한 공간 토큰을 병합하고 TokenLearner는 학습된 어텐션으로 공간 토큰을 선택하는 반면, STAC은 <b>시간 축</b>에서 비디오 표현을 압축</li>
+          </ul>
+          <div class="gain"><div>비디오 토큰 −50%</div><div class="base">ToMe 대비</div><div>연산량 −24.6%</div><div>추론 시간 −14.3%</div></div>
+        </div>
+      </div>
+    </div>
+
+    <figure class="mt">
+      <div class="dg"><svg class="sv" viewBox="0 0 1000 300" role="img" aria-label="ToMe, TokenLearner, STAC 압축 방식 비교" style="min-width:760px"><rect x="4.0" y="4.0" width="312.0" height="292.0" rx="16" class="bx" /><text x="26.0" y="34.0" class="" font-size="17" font-weight="800" text-anchor="start" dominant-baseline="middle" >(a) ToMe</text><text x="160.0" y="272.0" class="t2" font-size="13.5" font-weight="500" text-anchor="middle" dominant-baseline="middle" >프레임 안의 유사한 공간 토큰을 병합</text><rect x="108.0" y="228.0" width="104.0" height="24.0" rx="12" class="chip-s" /><text x="160.0" y="240.5" class="t2" font-size="12" font-weight="700" text-anchor="middle" dominant-baseline="middle" >압축 축 · 공간</text><rect x="340.0" y="4.0" width="312.0" height="292.0" rx="16" class="bx" /><text x="362.0" y="34.0" class="" font-size="17" font-weight="800" text-anchor="start" dominant-baseline="middle" >(b) TokenLearner</text><text x="496.0" y="272.0" class="t2" font-size="13.5" font-weight="500" text-anchor="middle" dominant-baseline="middle" >프레임 안에서 어텐션으로 공간 토큰 선택</text><rect x="444.0" y="228.0" width="104.0" height="24.0" rx="12" class="chip-s" /><text x="496.0" y="240.5" class="t2" font-size="12" font-weight="700" text-anchor="middle" dominant-baseline="middle" >압축 축 · 공간</text><rect x="676.0" y="4.0" width="312.0" height="292.0" rx="16" class="bx-a" /><text x="698.0" y="34.0" class="" font-size="17" font-weight="800" text-anchor="start" dominant-baseline="middle" >(c) STAC</text><rect x="918.0" y="22.0" width="50.0" height="24.0" rx="12" class="acc" /><text x="943.0" y="34.5" class="on-acc" font-size="12" font-weight="800" text-anchor="middle" dominant-baseline="middle" >Ours</text><text x="832.0" y="272.0" class="t2" font-size="13.5" font-weight="500" text-anchor="middle" dominant-baseline="middle" >프레임 간 시간 관계로 중요한 표현 선택</text><rect x="780.0" y="228.0" width="104.0" height="24.0" rx="12" class="chip-s" /><text x="832.0" y="240.5" class="acc-t" font-size="12" font-weight="700" text-anchor="middle" dominant-baseline="middle" >압축 축 · 시간</text><rect x="34.0" y="82.0" width="22.0" height="22.0" rx="3" class="tok" /><rect x="62.0" y="82.0" width="22.0" height="22.0" rx="3" class="tok-m" /><rect x="90.0" y="82.0" width="22.0" height="22.0" rx="3" class="tok" /><rect x="118.0" y="82.0" width="22.0" height="22.0" rx="3" class="tok-m" /><rect x="34.0" y="110.0" width="22.0" height="22.0" rx="3" class="tok-m" /><rect x="62.0" y="110.0" width="22.0" height="22.0" rx="3" class="tok" /><rect x="90.0" y="110.0" width="22.0" height="22.0" rx="3" class="tok-m" /><rect x="118.0" y="110.0" width="22.0" height="22.0" rx="3" class="tok" /><rect x="34.0" y="138.0" width="22.0" height="22.0" rx="3" class="tok" /><rect x="62.0" y="138.0" width="22.0" height="22.0" rx="3" class="tok-m" /><rect x="90.0" y="138.0" width="22.0" height="22.0" rx="3" class="tok" /><rect x="118.0" y="138.0" width="22.0" height="22.0" rx="3" class="tok-m" /><rect x="34.0" y="166.0" width="22.0" height="22.0" rx="3" class="tok-m" /><rect x="62.0" y="166.0" width="22.0" height="22.0" rx="3" class="tok" /><rect x="90.0" y="166.0" width="22.0" height="22.0" rx="3" class="tok-m" /><rect x="118.0" y="166.0" width="22.0" height="22.0" rx="3" class="tok" /><text x="87.0" y="210.0" class="t3" font-size="12" font-weight="600" text-anchor="middle" dominant-baseline="middle" >Frame</text><line x1="158.0" y1="135.0" x2="200.0" y2="135.0" class="ln" marker-end="url(#ah)"/><rect x="216.0" y="107.0" width="22.0" height="22.0" rx="3" class="tok-m" /><rect x="244.0" y="107.0" width="22.0" height="22.0" rx="3" class="tok" /><rect x="272.0" y="107.0" width="22.0" height="22.0" rx="3" class="tok-m" /><rect x="300.0" y="107.0" width="22.0" height="22.0" rx="3" class="tok" /><rect x="216.0" y="135.0" width="22.0" height="22.0" rx="3" class="tok" /><rect x="244.0" y="135.0" width="22.0" height="22.0" rx="3" class="tok-m" /><rect x="272.0" y="135.0" width="22.0" height="22.0" rx="3" class="tok" /><rect x="300.0" y="135.0" width="22.0" height="22.0" rx="3" class="tok-m" /><text x="269.0" y="210.0" class="t3" font-size="12" font-weight="600" text-anchor="middle" dominant-baseline="middle" >병합된 토큰</text><rect x="370.0" y="82.0" width="22.0" height="22.0" rx="3" class="tok" /><rect x="398.0" y="82.0" width="22.0" height="22.0" rx="3" class="h1" /><rect x="426.0" y="82.0" width="22.0" height="22.0" rx="3" class="tok" /><rect x="454.0" y="82.0" width="22.0" height="22.0" rx="3" class="h2" /><rect x="370.0" y="110.0" width="22.0" height="22.0" rx="3" class="h1" /><rect x="398.0" y="110.0" width="22.0" height="22.0" rx="3" class="h3" /><rect x="426.0" y="110.0" width="22.0" height="22.0" rx="3" class="h1" /><rect x="454.0" y="110.0" width="22.0" height="22.0" rx="3" class="tok" /><rect x="370.0" y="138.0" width="22.0" height="22.0" rx="3" class="tok" /><rect x="398.0" y="138.0" width="22.0" height="22.0" rx="3" class="h2" /><rect x="426.0" y="138.0" width="22.0" height="22.0" rx="3" class="h3" /><rect x="454.0" y="138.0" width="22.0" height="22.0" rx="3" class="h1" /><rect x="370.0" y="166.0" width="22.0" height="22.0" rx="3" class="h1" /><rect x="398.0" y="166.0" width="22.0" height="22.0" rx="3" class="tok" /><rect x="426.0" y="166.0" width="22.0" height="22.0" rx="3" class="h1" /><rect x="454.0" y="166.0" width="22.0" height="22.0" rx="3" class="tok" /><text x="423.0" y="210.0" class="t3" font-size="12" font-weight="600" text-anchor="middle" dominant-baseline="middle" >Spatial Attention</text><line x1="494.0" y1="135.0" x2="536.0" y2="135.0" class="ln" marker-end="url(#ah)"/><rect x="552.0" y="121.0" width="22.0" height="22.0" rx="3" class="h3" /><rect x="580.0" y="121.0" width="22.0" height="22.0" rx="3" class="h3" /><rect x="608.0" y="121.0" width="22.0" height="22.0" rx="3" class="h3" /><rect x="636.0" y="121.0" width="22.0" height="22.0" rx="3" class="h3" /><text x="605.0" y="210.0" class="t3" font-size="12" font-weight="600" text-anchor="middle" dominant-baseline="middle" >선택된 토큰</text><rect x="702.0" y="96.0" width="24.0" height="14.0" rx="3" class="tok" /><rect x="702.0" y="114.0" width="24.0" height="14.0" rx="3" class="tok" /><rect x="702.0" y="132.0" width="24.0" height="14.0" rx="3" class="tok" /><rect x="733.0" y="96.0" width="24.0" height="14.0" rx="3" class="acc-tok" /><rect x="733.0" y="114.0" width="24.0" height="14.0" rx="3" class="acc-tok" /><rect x="733.0" y="132.0" width="24.0" height="14.0" rx="3" class="acc-tok" /><rect x="764.0" y="96.0" width="24.0" height="14.0" rx="3" class="acc-tok" /><rect x="764.0" y="114.0" width="24.0" height="14.0" rx="3" class="acc-tok" /><rect x="764.0" y="132.0" width="24.0" height="14.0" rx="3" class="acc-tok" /><rect x="795.0" y="96.0" width="24.0" height="14.0" rx="3" class="tok" /><rect x="795.0" y="114.0" width="24.0" height="14.0" rx="3" class="tok" /><rect x="795.0" y="132.0" width="24.0" height="14.0" rx="3" class="tok" /><rect x="826.0" y="96.0" width="24.0" height="14.0" rx="3" class="tok" /><rect x="826.0" y="114.0" width="24.0" height="14.0" rx="3" class="tok" /><rect x="826.0" y="132.0" width="24.0" height="14.0" rx="3" class="tok" /><rect x="857.0" y="96.0" width="24.0" height="14.0" rx="3" class="acc-tok" /><rect x="857.0" y="114.0" width="24.0" height="14.0" rx="3" class="acc-tok" /><rect x="857.0" y="132.0" width="24.0" height="14.0" rx="3" class="acc-tok" /><rect x="888.0" y="96.0" width="24.0" height="14.0" rx="3" class="acc-tok" /><rect x="888.0" y="114.0" width="24.0" height="14.0" rx="3" class="acc-tok" /><rect x="888.0" y="132.0" width="24.0" height="14.0" rx="3" class="acc-tok" /><rect x="919.0" y="96.0" width="24.0" height="14.0" rx="3" class="tok" /><rect x="919.0" y="114.0" width="24.0" height="14.0" rx="3" class="tok" /><rect x="919.0" y="132.0" width="24.0" height="14.0" rx="3" class="tok" /><line x1="702.0" y1="162.0" x2="946.0" y2="162.0" class="ln" marker-end="url(#ah)"/><text x="954.0" y="162.0" class="t2" font-size="14" font-weight="700" text-anchor="start" dominant-baseline="middle" >t</text><line x1="824.0" y1="174.0" x2="824.0" y2="190.0" class="ln-a" marker-end="url(#ah)"/><rect x="762.0" y="198.0" width="24.0" height="14.0" rx="3" class="acc-tok" /><rect x="793.0" y="198.0" width="24.0" height="14.0" rx="3" class="acc-tok" /><rect x="824.0" y="198.0" width="24.0" height="14.0" rx="3" class="acc-tok" /><rect x="855.0" y="198.0" width="24.0" height="14.0" rx="3" class="acc-tok" /></svg></div>
+      <figcaption>압축 방식 비교 — 기존 방법은 프레임 안의 공간 토큰을, STAC은 프레임 간 시간 축의 표현을 줄입니다</figcaption>
+    </figure>
+
+    <h3 class="sub"><span class="n">2.5</span>결과 비교</h3>
+    <div class="res">
+      <div>
+        <p class="tbl-t">(a) 최종 성능 비교 — Charades-STA Test</p>
+        <div class="tbl-wrap"><table>
+          <tr><th>구성</th><th>Backbone</th><th>mIoU</th><th>R1@0.5</th><th>R1@0.7</th></tr>
+          <tr><td>QD-DETR</td><td>SF+CLIP</td><td>–</td><td>57.31</td><td>32.55</td></tr>
+          <tr><td>CG-DETR</td><td>SF+CLIP</td><td>50.13</td><td>58.44</td><td>36.34</td></tr>
+          <tr><td>UnLoc-L</td><td>CLIP*</td><td>–</td><td>60.80</td><td>38.40</td></tr>
+          <tr><td>EaTR</td><td>I3D</td><td>–</td><td>68.47</td><td>44.92</td></tr>
+          <tr><td>Mr.BLIP</td><td>BLIP-2</td><td>58.63</td><td>69.31</td><td class="best">49.29</td></tr>
+          <tr class="ours"><td>Ours (+TCP)</td><td>BLIP-2</td><td>62.41</td><td>70.16</td><td>44.06</td></tr>
+          <tr class="ours"><td><b>Ours (+TCP/STAC)</b></td><td>BLIP-2</td><td class="best">62.81</td><td class="best">71.96</td><td>46.64</td></tr>
+        </table></div>
+      </div>
+      <div class="col">
+        <div>
+          <p class="tbl-t">(b) 압축 방법 비교</p>
+          <div class="tbl-wrap"><table>
+            <tr><th>Method</th><th>mIoU</th><th>R1@0.5</th><th>R1@0.7</th></tr>
+            <tr class="ours"><td><b>STAC</b></td><td class="best">30.2</td><td class="best">34.3</td><td class="best">17.1</td></tr>
+            <tr><td>ToMe</td><td>28.2</td><td>31.7</td><td>16.2</td></tr>
+            <tr><td>TokenLearner</td><td>22.1</td><td>25.2</td><td>13.2</td></tr>
+          </table></div>
+        </div>
+        <div class="card eff">
+          <div>
+            <p class="bar-t">연산량 TFLOPs ↓</p>
+            <div class="bars">
+              <div class="bar"><div class="row"><span>STAC</span><b>12.51</b></div><div class="track"><div class="fill" style="width:75.4%"></div></div></div>
+              <div class="bar"><div class="row"><span>ToMe</span><span>16.59</span></div><div class="track"><div class="fill n" style="width:100%"></div></div></div>
+              <div class="bar"><div class="row"><span>TokenLearner</span><span>15.57</span></div><div class="track"><div class="fill n" style="width:93.9%"></div></div></div>
+            </div>
+          </div>
+          <div>
+            <p class="bar-t">추론 시간 (초) ↓</p>
+            <div class="bars">
+              <div class="bar"><div class="row"><span>STAC</span><b>0.30</b></div><div class="track"><div class="fill" style="width:81.1%"></div></div></div>
+              <div class="bar"><div class="row"><span>ToMe</span><span>0.35</span></div><div class="track"><div class="fill n" style="width:94.6%"></div></div></div>
+              <div class="bar"><div class="row"><span>TokenLearner</span><span>0.37</span></div><div class="track"><div class="fill n" style="width:100%"></div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="tbl-t" style="margin-top:28px">성과 정리</p>
+    <div class="grid4">
+      <div class="kpi"><div class="v">62.81 · 71.96</div><div class="l">mIoU · R1@0.5</div><p>1×A6000 19시간 학습으로 4×A100 55시간 환경의 비교 모델(Mr.BLIP)보다 향상</p></div>
+      <div class="kpi"><div class="v">전 지표 우위</div><div class="l">압축 방법 비교</div><p>시간 축 압축으로 ToMe · TokenLearner보다 모든 정확도 지표에서 높은 성능</p></div>
+      <div class="kpi"><div class="v">−24.6% · −14.3%</div><div class="l">연산량 · 추론 시간</div><p>ToMe 대비 연산량과 추론 시간을 함께 절감</p></div>
+      <div class="kpi muted"><div class="v">R1@0.7 −2.65%p</div><div class="l">한계</div><p>정밀한 경계 탐지는 비교 모델보다 낮아 개선 과제로 남음</p></div>
+    </div>
+
+    <h3 class="sub"><span class="n">2.6</span>Tech Stack</h3>
+    <div class="stack-list">
+      <div class="stack-row"><b>Framework</b><div class="pills"><span>PyTorch</span><span>Hugging Face Transformers</span></div></div>
+      <div class="stack-row"><b>Multimodal Models</b><div class="pills"><span>BLIP-2</span><span>FLAN-T5-XXL</span><span>Mamba SSM</span></div></div>
+      <div class="stack-row"><b>Efficient Fine-tuning</b><div class="pills"><span>PEFT</span><span>Q-LoRA</span><span>bitsandbytes</span><span>Gradient Checkpointing</span></div></div>
+      <div class="stack-row"><b>Training &amp; Optimization</b><div class="pills"><span>DeepSpeed</span><span>BF16</span></div></div>
+      <div class="stack-row"><b>Experiment &amp; Profiling</b><div class="pills"><span>TensorBoard</span><span>calflops</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 3. RESEARCH 2 ================= -->
+<section class="block alt" id="r2">
+  <div class="wrap">
+    <div class="s-head">
+      <span class="tag">03 · RESEARCH 2</span>
+      <h2>공연 영상 하이라이트 클립 자동 출력 프로젝트</h2>
+      <p>공연 영상에서 편집자가 활용할 만한 장면을 자동으로 찾는 문제를 다뤘습니다. 산학 과제에서 VLM 기반 파이프라인을 구현하며 하이라이트 장면이 중간에 끊기는 한계를 확인했고, 과제 종료 후 개인 연구에서 의미 정보와 오디오 · 얼굴 · 움직임 신호를 융합한 E2E 프로토타입으로 확장했습니다.</p>
+      <div class="meta"><span class="chip">산학 2024.07 – 2025.07</span><span class="chip">개인 2025.12 – 2026.06</span><span class="chip g">VideoLLaMA 2</span><span class="chip g">Qwen2.5-Omni</span></div>
+    </div>
+
+    <h3 class="sub"><span class="n">3.1</span>&lt;산학&gt; VideoLLaMA 2 기반 파이프라인과 구간 분할</h3>
+    <div class="grid3">
+      <div class="card"><h4>기준에 대한 의견 차이</h4><p>하이라이트 판단 기준이 인물 중심의 화면 구성과 음향 고조로 나뉘어, 한쪽 기준만으로는 근거 있는 합의 도출이 어려움</p></div>
+      <div class="card"><h4>모달리티 제약</h4><p>기존 파이프라인은 영상과 텍스트만 처리해 음향 기준을 점수로 반영 불가<br>→ 오디오까지 다루는 모델 교체와 파이프라인 재구성 필요</p></div>
+      <div class="card"><h4>시간 맥락 편중</h4><p>3분 영상을 한 번에 입력하면 후보가 앞부분에 편중<br>→ 사전학습 데이터가 1분 내외인 점이 원인으로 추정</p></div>
+    </div>
+    <figure class="mt">
+      <div class="dg"><svg class="sv" viewBox="0 0 1000 360" role="img" aria-label="3분 영상을 3개 구간으로 나눠 분석한 뒤 원래 영상 시간 기준으로 합치는 과정" style="min-width:720px"><text x="20.0" y="46.0" class="" font-size="15" font-weight="800" text-anchor="start" dominant-baseline="middle" >입력 영상</text><text x="20.0" y="66.0" class="t3" font-size="12.5" font-weight="500" text-anchor="start" dominant-baseline="middle" >약 3분</text><rect x="150.0" y="36.0" width="264.0" height="34.0" rx="8" class="seg1" /><text x="285.0" y="53.5" class="" font-size="14" font-weight="700" text-anchor="middle" dominant-baseline="middle" >구간 1</text><rect x="423.0" y="36.0" width="264.0" height="34.0" rx="8" class="seg2" /><text x="555.0" y="53.5" class="" font-size="14" font-weight="700" text-anchor="middle" dominant-baseline="middle" >구간 2</text><rect x="693.0" y="36.0" width="264.0" height="34.0" rx="8" class="seg3" /><text x="825.0" y="53.5" class="" font-size="14" font-weight="700" text-anchor="middle" dominant-baseline="middle" >구간 3</text><line x1="285.0" y1="72.0" x2="285.0" y2="102.0" class="ln" marker-end="url(#ah)"/><rect x="175.0" y="106.0" width="220.0" height="50.0" rx="12" class="bx" /><text x="285.0" y="124.0" class="" font-size="14.5" font-weight="700" text-anchor="middle" dominant-baseline="middle" >구간별 분석</text><text x="285.0" y="143.0" class="t3" font-size="12" font-weight="500" text-anchor="middle" dominant-baseline="middle" >약 1분 단위 입력</text><line x1="285.0" y1="158.0" x2="285.0" y2="186.0" class="ln" marker-end="url(#ah)"/><rect x="165.0" y="192.0" width="240.0" height="22.0" rx="6" class="tok" /><rect x="208.2" y="192.0" width="43.2" height="22.0" rx="5" class="acc" /><rect x="309.0" y="192.0" width="43.2" height="22.0" rx="5" class="acc" /><line x1="555.0" y1="72.0" x2="555.0" y2="102.0" class="ln" marker-end="url(#ah)"/><rect x="445.0" y="106.0" width="220.0" height="50.0" rx="12" class="bx" /><text x="555.0" y="124.0" class="" font-size="14.5" font-weight="700" text-anchor="middle" dominant-baseline="middle" >구간별 분석</text><text x="555.0" y="143.0" class="t3" font-size="12" font-weight="500" text-anchor="middle" dominant-baseline="middle" >약 1분 단위 입력</text><line x1="555.0" y1="158.0" x2="555.0" y2="186.0" class="ln" marker-end="url(#ah)"/><rect x="435.0" y="192.0" width="240.0" height="22.0" rx="6" class="tok" /><rect x="478.2" y="192.0" width="43.2" height="22.0" rx="5" class="acc" /><rect x="579.0" y="192.0" width="43.2" height="22.0" rx="5" class="acc" /><line x1="825.0" y1="72.0" x2="825.0" y2="102.0" class="ln" marker-end="url(#ah)"/><rect x="715.0" y="106.0" width="220.0" height="50.0" rx="12" class="bx" /><text x="825.0" y="124.0" class="" font-size="14.5" font-weight="700" text-anchor="middle" dominant-baseline="middle" >구간별 분석</text><text x="825.0" y="143.0" class="t3" font-size="12" font-weight="500" text-anchor="middle" dominant-baseline="middle" >약 1분 단위 입력</text><line x1="825.0" y1="158.0" x2="825.0" y2="186.0" class="ln" marker-end="url(#ah)"/><rect x="705.0" y="192.0" width="240.0" height="22.0" rx="6" class="tok" /><rect x="748.2" y="192.0" width="43.2" height="22.0" rx="5" class="acc" /><rect x="849.0" y="192.0" width="43.2" height="22.0" rx="5" class="acc" /><text x="20.0" y="203.0" class="" font-size="14" font-weight="700" text-anchor="start" dominant-baseline="middle" >구간별 선택</text><text x="20.0" y="222.0" class="t3" font-size="12" font-weight="500" text-anchor="start" dominant-baseline="middle" >구간 안의 시간</text><path d="M285.0,216 L285.0,250 L515.0,262 L515.0,276" class="ln" marker-end="url(#ah)"/><path d="M555.0,216 L555.0,250 L555.0,262 L555.0,276" class="ln" marker-end="url(#ah)"/><path d="M825.0,216 L825.0,250 L595.0,262 L595.0,276" class="ln" marker-end="url(#ah)"/><rect x="150.0" y="282.0" width="810.0" height="34.0" rx="8" class="tok" /><rect x="198.6" y="282.0" width="48.6" height="34.0" rx="6" class="acc" /><rect x="312.0" y="282.0" width="48.6" height="34.0" rx="6" class="acc" /><rect x="468.6" y="282.0" width="48.6" height="34.0" rx="6" class="acc" /><rect x="582.0" y="282.0" width="48.6" height="34.0" rx="6" class="acc" /><rect x="738.6" y="282.0" width="48.6" height="34.0" rx="6" class="acc" /><rect x="852.0" y="282.0" width="48.6" height="34.0" rx="6" class="acc" /><line x1="420.0" y1="278.0" x2="420.0" y2="320.0" class="ln-d" stroke-dasharray="5 5"/><line x1="690.0" y1="278.0" x2="690.0" y2="320.0" class="ln-d" stroke-dasharray="5 5"/><text x="20.0" y="293.0" class="acc-t" font-size="14.5" font-weight="800" text-anchor="start" dominant-baseline="middle" >하나의 하이라이트</text><text x="20.0" y="312.0" class="t3" font-size="12" font-weight="500" text-anchor="start" dominant-baseline="middle" >원래 영상 시간 기준</text><text x="555.0" y="342.0" class="t2" font-size="13" font-weight="500" text-anchor="middle" dominant-baseline="middle" >각 구간에서 고른 장면의 시간을 원래 영상의 시간으로 되돌려 하나의 타임라인에 배치</text></svg></div>
+      <figcaption>3구간 분할 분석과 병합 과정</figcaption>
+    </figure>
+    <div class="card mt">
+      <h4>해결</h4>
+      <ul class="dot">
+        <li>사전학습 데이터 길이에 맞춰 3분 영상을 <b>3개 구간으로 나눠</b> 구간별로 분석<br>→ 후보가 앞부분에 몰리는 문제 완화</li>
+        <li>각 구간에서 찾은 장면의 시간을 <b>원래 영상 기준 시간으로 되돌려 하나로 합침</b><br>→ 영상 전체에서 고르게 장면 선택</li>
+        <li>하이라이트 자동 생성 파이프라인 설계 및 구축</li>
+      </ul>
+      <div class="limit"><b>한계</b> 의미 있는 장면은 잘 찾았지만, 구간 경계에 걸친 장면은 앞뒤 맥락이 잘려 <b>하이라이트 장면이 중간에 끊기는 문제</b> 발견</div>
+    </div>
+
+    <h3 class="sub"><span class="n">3.2</span>&lt;개인&gt; 다중 신호 융합 기반 E2E 프로토타입</h3>
+    <p style="color:var(--ink-2);margin-bottom:20px">AI 모델은 의미적으로 중요한 장면은 찾지만, 실제 편집처럼 앞뒤 맥락이 이어지는 정확한 구간을 잡기에는 한계가 있었습니다. 그래서 초 단위로 측정한 <b style="color:var(--ink)">오디오 · 얼굴 · 움직임 신호</b>와 AI의 <b style="color:var(--ink)">의미 후보</b>를 함께 활용하는 6단계 파이프라인을 구성했습니다.</p>
+    <figure>
+      <div class="dg"><svg class="sv" viewBox="0 0 1000 380" role="img" aria-label="멀티모달 하이라이트 생성 파이프라인" style="min-width:780px"><rect x="14.0" y="150.0" width="108.0" height="70.0" rx="14" class="bx-s" /><text x="68.0" y="177.0" class="" font-size="15" font-weight="800" text-anchor="middle" dominant-baseline="middle" >영상 입력</text><text x="68.0" y="198.0" class="t3" font-size="12" font-weight="500" text-anchor="middle" dominant-baseline="middle" >업로드 · 옵션</text><rect x="160.0" y="22.0" width="300.0" height="116.0" rx="14" class="bx" /><circle cx="184.0" cy="48.0" r="12" class="acc"/><text x="184.0" y="49.0" class="on-acc" font-size="13" font-weight="800" text-anchor="middle" dominant-baseline="middle" >1</text><text x="204.0" y="49.0" class="" font-size="15" font-weight="800" text-anchor="start" dominant-baseline="middle" >신호 점수 산출</text><text x="178.0" y="78.0" class="t2" font-size="12.5" font-weight="500" text-anchor="start" dominant-baseline="middle" >오디오 음량 · 얼굴 · 움직임을 초 단위로</text><text x="178.0" y="99.0" class="t2" font-size="12.5" font-weight="500" text-anchor="start" dominant-baseline="middle" >0~1 정규화 후 사용자 가중치로 합산</text><rect x="160.0" y="232.0" width="140.0" height="116.0" rx="14" class="bx" /><circle cx="184.0" cy="258.0" r="12" class="acc"/><text x="184.0" y="259.0" class="on-acc" font-size="13" font-weight="800" text-anchor="middle" dominant-baseline="middle" >2</text><text x="204.0" y="259.0" class="" font-size="15" font-weight="800" text-anchor="start" dominant-baseline="middle" >중첩 구간</text><text x="178.0" y="288.0" class="t2" font-size="12.5" font-weight="500" text-anchor="start" dominant-baseline="middle" >50% 겹치게</text><text x="178.0" y="309.0" class="t2" font-size="12.5" font-weight="500" text-anchor="start" dominant-baseline="middle" >구간 구성</text><rect x="320.0" y="232.0" width="140.0" height="116.0" rx="14" class="bx" /><circle cx="344.0" cy="258.0" r="12" class="acc"/><text x="344.0" y="259.0" class="on-acc" font-size="13" font-weight="800" text-anchor="middle" dominant-baseline="middle" >3</text><text x="364.0" y="259.0" class="" font-size="15" font-weight="800" text-anchor="start" dominant-baseline="middle" >의미 후보</text><text x="338.0" y="288.0" class="t2" font-size="12.5" font-weight="500" text-anchor="start" dominant-baseline="middle" >Qwen2.5-Omni</text><text x="338.0" y="309.0" class="t2" font-size="12.5" font-weight="500" text-anchor="start" dominant-baseline="middle" >시점 · 확신도</text><line x1="300.0" y1="290.0" x2="316.0" y2="290.0" class="ln" marker-end="url(#ah)"/><path d="M122,175 L140,175 L140,80 L156,80" class="ln" marker-end="url(#ah)"/><path d="M122,195 L140,195 L140,290 L156,290" class="ln" marker-end="url(#ah)"/><rect x="510.0" y="118.0" width="190.0" height="136.0" rx="14" class="bx-a" /><circle cx="534.0" cy="144.0" r="12" class="acc"/><text x="534.0" y="145.0" class="on-acc" font-size="13" font-weight="800" text-anchor="middle" dominant-baseline="middle" >4</text><text x="554.0" y="145.0" class="" font-size="15" font-weight="800" text-anchor="start" dominant-baseline="middle" >점수 통합</text><text x="528.0" y="174.0" class="t2" font-size="12.5" font-weight="500" text-anchor="start" dominant-baseline="middle" >AI 추천 시점 주변</text><text x="528.0" y="195.0" class="t2" font-size="12.5" font-weight="500" text-anchor="start" dominant-baseline="middle" >가우시안 가산점 결합</text><text x="528.0" y="216.0" class="t2" font-size="12.5" font-weight="500" text-anchor="start" dominant-baseline="middle" >기준선으로 구간 탐지</text><path d="M460,80 L485,80 L485,170 L506,170" class="ln" marker-end="url(#ah)"/><path d="M460,290 L485,290 L485,205 L506,205" class="ln" marker-end="url(#ah)"/><rect x="740.0" y="128.0" width="130.0" height="116.0" rx="14" class="bx" /><circle cx="764.0" cy="154.0" r="12" class="acc"/><text x="764.0" y="155.0" class="on-acc" font-size="13" font-weight="800" text-anchor="middle" dominant-baseline="middle" >5</text><text x="784.0" y="155.0" class="" font-size="15" font-weight="800" text-anchor="start" dominant-baseline="middle" >목표 길이</text><text x="758.0" y="184.0" class="t2" font-size="12.5" font-weight="500" text-anchor="start" dominant-baseline="middle" >점수 순 선택</text><text x="758.0" y="205.0" class="t2" font-size="12.5" font-weight="500" text-anchor="start" dominant-baseline="middle" >시간순 정렬</text><line x1="700.0" y1="186.0" x2="736.0" y2="186.0" class="ln" marker-end="url(#ah)"/><rect x="898.0" y="146.0" width="90.0" height="80.0" rx="14" class="acc" /><text x="943.0" y="176.0" class="on-acc" font-size="14.5" font-weight="800" text-anchor="middle" dominant-baseline="middle" >최종</text><text x="943.0" y="197.0" class="on-acc" font-size="14.5" font-weight="800" text-anchor="middle" dominant-baseline="middle" >하이라이트</text><line x1="870.0" y1="186.0" x2="894.0" y2="186.0" class="ln" marker-end="url(#ah)"/><rect x="510.0" y="292.0" width="190.0" height="70.0" rx="14" class="bx-dash" /><circle cx="534.0" cy="318.0" r="12" class="acc"/><text x="534.0" y="319.0" class="on-acc" font-size="13" font-weight="800" text-anchor="middle" dominant-baseline="middle" >6</text><text x="554.0" y="319.0" class="" font-size="15" font-weight="800" text-anchor="start" dominant-baseline="middle" >예외 처리</text><text x="528.0" y="344.0" class="t2" font-size="12.5" font-weight="500" text-anchor="start" dominant-baseline="middle" >기준선 조정 · 신호만 재탐색</text><path d="M575,254 L575,288" class="ln-d" marker-end="url(#ah)" stroke-dasharray="5 5"/><text x="568.0" y="272.0" class="t3" font-size="11.5" font-weight="600" text-anchor="end" dominant-baseline="middle" >후보 없음</text><path d="M640,292 L640,258" class="ln-d" marker-end="url(#ah)" stroke-dasharray="5 5"/><text x="648.0" y="272.0" class="t3" font-size="11.5" font-weight="600" text-anchor="start" dominant-baseline="middle" >재시도</text></svg></div>
+      <figcaption>멀티모달 하이라이트 생성 파이프라인</figcaption>
+    </figure>
+
+    <div class="steps mt">
+      <div class="stepc"><h5><span class="no">1</span>신호 점수 산출</h5><ul class="dot">
+        <li>오디오 RMS를 활용한 초 단위 음량 계산</li>
+        <li>초당 1프레임 얼굴 검출 및 검출 신뢰도 · 화면 점유율 기반 점수 계산</li>
+        <li>MediaPipe 얼굴 검출, 실패 시 대체 검출 방식 적용</li>
+        <li>초당 5프레임 Farneback Optical Flow 평균으로 움직임 점수 계산</li>
+        <li>신호별 0~1 정규화 후 사용자 가중치에 따라 합산</li></ul></div>
+      <div class="stepc"><h5><span class="no">2</span>중첩 구간 계획</h5><ul class="dot">
+        <li>분석 구간을 50% 중첩되도록 구성</li>
+        <li>구간 경계 부근의 맥락을 함께 분석하도록 입력 범위 설정</li>
+        <li>분석 계획의 구간 길이와 모델 입력 영상 길이를 별도 관리</li></ul></div>
+      <div class="stepc"><h5><span class="no">3</span>의미 후보 탐색</h5><ul class="dot">
+        <li>Qwen2.5-Omni-7B로 구간별 시청각 분석</li>
+        <li>사용자 프롬프트를 반영해 하이라이트 시점 · 확신도 산출</li>
+        <li>구간별 분석 반복 및 후보 통합</li></ul></div>
+      <div class="stepc"><h5><span class="no">4</span>점수 통합 및 구간 탐지</h5><ul class="dot">
+        <li>가까운 후보 시점의 중복 정리</li>
+        <li>AI 추천 시점 주변에 확신도 기반 가우시안 가산점 부여</li>
+        <li>신호 점수와 AI 가산점 결합</li>
+        <li>이동평균 후 영상별 평균 · 최고점으로 기준선 산출</li>
+        <li>기준선으로 구간 탐지 및 인접 구간 병합</li></ul></div>
+      <div class="stepc"><h5><span class="no">5</span>목표 길이 반영</h5><ul class="dot">
+        <li>후보 구간의 평균 점수로 우선순위 설정</li>
+        <li>목표 길이를 고려한 구간 선택</li>
+        <li>선택 구간을 원본 시간순으로 정렬해 최종 영상 합성</li></ul></div>
+      <div class="stepc alt"><h5><span class="no">6</span>예외 처리</h5><ul class="dot">
+        <li>후보가 없으면 기준선 비율 조정 후 재시도</li>
+        <li>신호 점수만 활용한 재탐색</li>
+        <li>최종 대안으로 최고점 주변 구간 추출</li></ul></div>
+    </div>
+
+    <figure class="mt">
+      <div class="dg"><svg class="sv" viewBox="0 0 1000 340" role="img" aria-label="AI 추천 시점 주변의 가우시안 가산점과 기준선으로 구간을 탐지하는 예시" style="min-width:720px"><rect x="470.5" y="40.0" width="182.5" height="230.0" rx="0" class="band" /><path d="M470.5,270.0 L470.5,260.7 L474.9,258.7 L479.4,256.3 L483.9,253.7 L488.3,250.8 L492.8,247.6 L497.2,244.1 L501.6,240.4 L506.1,236.4 L510.6,232.3 L515.0,228.1 L519.5,224.0 L523.9,219.9 L528.4,216.0 L532.8,212.4 L537.2,209.1 L541.7,206.3 L546.1,204.0 L550.6,202.4 L555.0,201.3 L559.5,201.0 L564.0,201.3 L568.4,202.4 L572.9,204.0 L577.3,206.3 L581.8,209.1 L586.2,212.4 L590.6,216.0 L595.1,219.9 L599.5,224.0 L604.0,228.1 L608.5,232.3 L612.9,236.4 L617.4,240.4 L621.8,244.1 L626.2,247.6 L630.7,250.8 L635.1,253.7 L639.6,256.3 L644.0,258.7 L648.5,260.7 L648.5,270.0 Z" class="bonus"/><line x1="70.0" y1="270.0" x2="970.0" y2="270.0" class="ax" marker-end="url(#ah)"/><line x1="70.0" y1="270.0" x2="70.0" y2="26.0" class="ax" marker-end="url(#ah)"/><text x="70.0" y="288.0" class="t3" font-size="12" font-weight="500" text-anchor="middle" dominant-baseline="middle" >0</text><text x="248.0" y="288.0" class="t3" font-size="12" font-weight="500" text-anchor="middle" dominant-baseline="middle" >20</text><text x="426.0" y="288.0" class="t3" font-size="12" font-weight="500" text-anchor="middle" dominant-baseline="middle" >40</text><text x="604.0" y="288.0" class="t3" font-size="12" font-weight="500" text-anchor="middle" dominant-baseline="middle" >60</text><text x="782.0" y="288.0" class="t3" font-size="12" font-weight="500" text-anchor="middle" dominant-baseline="middle" >80</text><text x="960.0" y="288.0" class="t3" font-size="12" font-weight="500" text-anchor="middle" dominant-baseline="middle" >100초</text><text x="60.0" y="24.0" class="t3" font-size="12" font-weight="600" text-anchor="end" dominant-baseline="middle" >점수</text><path d="M70.0,174.9 L74.5,168.9 L78.9,164.7 L83.3,162.5 L87.8,162.3 L92.2,163.9 L96.7,166.7 L101.2,170.1 L105.6,173.5 L110.0,176.2 L114.5,177.8 L119.0,178.1 L123.4,176.9 L127.8,174.7 L132.3,171.8 L136.8,168.9 L141.2,166.6 L145.7,165.6 L150.1,166.3 L154.6,168.9 L159.0,173.4 L163.4,179.3 L167.9,186.3 L172.3,193.5 L176.8,200.1 L181.2,205.4 L185.7,208.8 L190.2,209.9 L194.6,208.6 L199.1,204.9 L203.5,199.4 L207.9,192.7 L212.4,185.5 L216.8,178.4 L221.3,172.3 L225.8,167.4 L230.2,164.1 L234.7,162.3 L239.1,161.7 L243.6,161.9 L248.0,162.3 L252.4,162.3 L256.9,161.5 L261.4,159.7 L265.8,156.6 L270.2,152.5 L274.7,147.8 L279.1,143.0 L283.6,138.9 L288.1,136.0 L292.5,135.1 L296.9,136.3 L301.4,139.9 L305.9,145.7 L310.3,153.3 L314.8,162.0 L319.2,171.1 L323.6,179.7 L328.1,187.2 L332.6,192.9 L337.0,196.6 L341.4,198.2 L345.9,197.9 L350.4,196.2 L354.8,193.6 L359.2,191.0 L363.7,188.9 L368.1,187.8 L372.6,188.0 L377.1,189.6 L381.5,192.3 L385.9,195.6 L390.4,199.1 L394.9,201.8 L399.3,203.4 L403.8,203.2 L408.2,201.0 L412.6,196.7 L417.1,190.8 L421.6,183.5 L426.0,175.7 L430.4,168.2 L434.9,161.5 L439.4,156.5 L443.8,153.6 L448.2,152.7 L452.7,154.0 L457.1,156.9 L461.6,161.0 L466.1,165.3 L470.5,169.4 L474.9,172.5 L479.4,174.1 L483.9,174.1 L488.3,172.5 L492.8,169.7 L497.2,166.0 L501.6,162.2 L506.1,158.8 L510.6,156.6 L515.0,155.7 L519.5,156.5 L523.9,158.8 L528.4,162.2 L532.8,166.3 L537.2,170.2 L541.7,173.4 L546.1,175.2 L550.6,175.1 L555.0,172.9 L559.5,168.6 L564.0,162.6 L568.4,155.5 L572.9,148.0 L577.3,140.8 L581.8,134.7 L586.2,130.3 L590.6,128.0 L595.1,127.7 L599.5,129.5 L604.0,132.7 L608.5,136.9 L612.9,141.3 L617.4,145.2 L621.8,148.3 L626.2,150.0 L630.7,150.4 L635.1,149.5 L639.6,147.9 L644.0,146.0 L648.5,144.6 L653.0,144.3 L657.4,145.5 L661.9,148.7 L666.3,153.9 L670.8,160.8 L675.2,169.1 L679.6,177.9 L684.1,186.6 L688.5,194.3 L693.0,200.5 L697.5,204.6 L701.9,206.5 L706.4,206.1 L710.8,203.8 L715.2,200.2 L719.7,195.9 L724.1,191.7 L728.6,188.1 L733.0,185.7 L737.5,184.8 L742.0,185.2 L746.4,186.7 L750.9,188.9 L755.3,191.2 L759.8,192.8 L764.2,193.3 L768.6,192.2 L773.1,189.4 L777.5,184.9 L782.0,179.1 L786.5,172.5 L790.9,165.8 L795.4,159.9 L799.8,155.4 L804.2,152.9 L808.7,152.6 L813.1,154.7 L817.6,158.8 L822.0,164.5 L826.5,171.0 L831.0,177.8 L835.4,183.9 L839.9,188.8 L844.3,192.1 L848.8,193.7 L853.2,193.6 L857.6,192.2 L862.1,190.1 L866.5,187.8 L871.0,186.1 L875.5,185.4 L879.9,186.1 L884.4,188.3 L888.8,191.7 L893.2,196.0 L897.7,200.6 L902.1,204.7 L906.6,207.7 L911.0,209.1 L915.5,208.3 L920.0,205.4 L924.4,200.5 L928.9,193.9 L933.3,186.4 L937.8,178.7 L942.2,171.5 L946.6,165.6 L951.1,161.5 L955.5,159.5 L960.0,159.6" class="c-raw"/><path d="M70.0,169.2 L74.5,170.0 L78.9,170.5 L83.3,170.8 L87.8,170.9 L92.2,170.7 L96.7,170.5 L101.2,170.2 L105.6,170.0 L110.0,170.0 L114.5,170.1 L119.0,170.3 L123.4,171.2 L127.8,172.5 L132.3,174.3 L136.8,176.4 L141.2,178.5 L145.7,180.6 L150.1,182.4 L154.6,183.9 L159.0,185.0 L163.4,185.7 L167.9,186.1 L172.3,186.2 L176.8,186.0 L181.2,185.8 L185.7,185.6 L190.2,185.4 L194.6,185.2 L199.1,185.0 L203.5,184.7 L207.9,184.1 L212.4,183.3 L216.8,182.0 L221.3,180.3 L225.8,178.0 L230.2,175.3 L234.7,172.1 L239.1,168.7 L243.6,165.3 L248.0,162.0 L252.4,159.0 L256.9,156.4 L261.4,154.5 L265.8,153.4 L270.2,152.9 L274.7,153.0 L279.1,153.8 L283.6,155.0 L288.1,156.5 L292.5,158.1 L296.9,159.8 L301.4,161.5 L305.9,163.2 L310.3,164.8 L314.8,166.4 L319.2,168.2 L323.6,170.1 L328.1,172.2 L332.6,174.6 L337.0,177.3 L341.4,180.2 L345.9,183.2 L350.4,186.1 L354.8,188.9 L359.2,191.3 L363.7,193.1 L368.1,194.3 L372.6,194.9 L377.1,194.7 L381.5,193.9 L385.9,192.5 L390.4,190.8 L394.9,188.8 L399.3,186.8 L403.8,184.8 L408.2,183.1 L412.6,181.5 L417.1,180.2 L421.6,179.2 L426.0,177.8 L430.4,176.3 L434.9,174.6 L439.4,172.6 L443.8,170.3 L448.2,167.7 L452.7,164.7 L457.1,161.4 L461.6,158.0 L466.1,154.6 L470.5,151.3 L474.9,148.1 L479.4,145.3 L483.9,142.8 L488.3,140.5 L492.8,138.4 L497.2,136.3 L501.6,134.2 L506.1,131.8 L510.6,129.1 L515.0,126.0 L519.5,122.9 L523.9,119.4 L528.4,115.6 L532.8,111.8 L537.2,108.0 L541.7,104.5 L546.1,101.3 L550.6,98.7 L555.0,96.7 L559.5,95.4 L564.0,94.7 L568.4,94.5 L572.9,94.9 L577.3,95.5 L581.8,96.5 L586.2,97.5 L590.6,98.6 L595.1,99.8 L599.5,101.1 L604.0,102.6 L608.5,104.7 L612.9,107.2 L617.4,110.1 L621.8,113.5 L626.2,117.5 L630.7,122.0 L635.1,127.0 L639.6,132.4 L644.0,137.9 L648.5,143.5 L653.0,148.9 L657.4,154.0 L661.9,158.7 L666.3,162.9 L670.8,166.6 L675.2,169.9 L679.6,172.8 L684.1,175.4 L688.5,177.8 L693.0,180.2 L697.5,182.6 L701.9,184.6 L706.4,186.7 L710.8,188.7 L715.2,190.5 L719.7,192.1 L724.1,193.2 L728.6,193.7 L733.0,193.7 L737.5,192.9 L742.0,191.6 L746.4,189.8 L750.9,187.5 L755.3,185.1 L759.8,182.7 L764.2,180.4 L768.6,178.5 L773.1,176.9 L777.5,175.8 L782.0,175.1 L786.5,174.7 L790.9,174.7 L795.4,174.8 L799.8,174.9 L804.2,175.1 L808.7,175.1 L813.1,175.0 L817.6,174.9 L822.0,174.9 L826.5,174.9 L831.0,175.2 L835.4,175.9 L839.9,176.9 L844.3,178.4 L848.8,180.4 L853.2,182.6 L857.6,185.1 L862.1,187.7 L866.5,190.0 L871.0,192.1 L875.5,193.8 L879.9,194.9 L884.4,195.3 L888.8,195.2 L893.2,194.6 L897.7,193.5 L902.1,192.2 L906.6,190.7 L911.0,189.3 L915.5,187.9 L920.0,188.0 L924.4,188.2 L928.9,188.3 L933.3,188.3 L937.8,188.1 L942.2,187.5 L946.6,186.6 L951.1,185.2 L955.5,183.3 L960.0,181.0" class="c-acc"/><line x1="70.0" y1="151.4" x2="960.0" y2="151.4" class="thr" stroke-dasharray="5 5"/><text x="960.0" y="139.4" class="t2" font-size="12.5" font-weight="600" text-anchor="end" dominant-baseline="middle" >기준선 = 평균 + (최고점 − 평균) × 0.2</text><line x1="559.5" y1="270.0" x2="559.5" y2="46.0" class="rec" stroke-dasharray="5 5"/><rect x="507.5" y="10.0" width="104.0" height="24.0" rx="12" class="acc" /><text x="559.5" y="22.5" class="on-acc" font-size="12" font-weight="700" text-anchor="middle" dominant-baseline="middle" >AI 추천 시점</text><line x1="470.5" y1="304.0" x2="653.0" y2="304.0" class="ln-a"/><line x1="470.5" y1="298.0" x2="470.5" y2="310.0" class="ln-a"/><line x1="653.0" y1="298.0" x2="653.0" y2="310.0" class="ln-a"/><text x="561.7" y="324.0" class="acc-t" font-size="13" font-weight="800" text-anchor="middle" dominant-baseline="middle" >탐지 구간</text><line x1="84.0" y1="44.0" x2="110.0" y2="44.0" class="c-raw"/><text x="118.0" y="45.0" class="t2" font-size="12.5" font-weight="600" text-anchor="start" dominant-baseline="middle" >신호 점수</text><rect x="196.0" y="37.0" width="22.0" height="14.0" rx="3" class="bonus" /><text x="226.0" y="45.0" class="t2" font-size="12.5" font-weight="600" text-anchor="start" dominant-baseline="middle" >가우시안 가산점 (±10초)</text><line x1="384.0" y1="44.0" x2="410.0" y2="44.0" class="c-acc"/><text x="418.0" y="45.0" class="t2" font-size="12.5" font-weight="600" text-anchor="start" dominant-baseline="middle" >통합 점수 (10초 이동평균)</text></svg></div>
+      <figcaption>④ 점수 통합 예시 — AI 추천 시점 주변에 가산점을 더한 뒤, 기준선을 넘는 구간을 하이라이트로 탐지 (개념도)</figcaption>
+    </figure>
+
+    <p class="tbl-t" style="margin-top:28px">구현 설정 기록</p>
+    <div class="kv">
+      <div><span>기본 가중치</span><b>오디오 0.4 · 얼굴 0.2 · 움직임 0.4</b></div>
+      <div><span>가중치 합 검사</span><b>1.0 허용 오차</b></div>
+      <div><span>기본 목표 길이</span><b>30초</b></div>
+      <div><span>근접 후보 정리 범위</span><b>3초</b></div>
+      <div><span>가우시안 가산 범위</span><b>추천 시점 ±10초</b></div>
+      <div><span>가산점 상한</span><b>0.3 × 확신도</b></div>
+      <div><span>가우시안 표준편차</span><b>5초</b></div>
+      <div><span>이동평균 범위</span><b>10초</b></div>
+      <div><span>인접 구간 병합</span><b>7초 이내</b></div>
+      <div class="wide"><span>기준선</span><b>평균 + (최고점 − 평균) × 0.2</b></div>
+      <div><span>최소 구간 길이</span><b>5초</b></div>
+    </div>
+    <p class="fine">※ 위 값은 구현 설정 기록이며, 최적값 또는 성능 향상의 원인으로 단정하지 않습니다.<br>※ 설정값 선정 과정은 실험 기록 확인 후 별도로 보완할 예정입니다.</p>
+
+    <h3 class="sub"><span class="n">3.3</span>시스템 및 대시보드</h3>
+    <figure>
+      <div class="shot"><img src="images/r2-dashboard.jpg" alt="HighlightStudio 대시보드" loading="lazy" onerror="imgFail(this)"></div>
+      <figcaption>HighlightStudio — React 대시보드</figcaption>
+    </figure>
+    <div class="grid3 mt">
+      <div class="card"><h4>FastAPI</h4><ul class="dot">
+        <li>영상 업로드 · 분석 옵션 입력 · 작업 등록</li>
+        <li>비동기 작업 처리 및 진행 상태 · 결과 조회</li></ul></div>
+      <div class="card"><h4>LangGraph</h4><ul class="dot">
+        <li>7개 노드 기반 상태 관리</li>
+        <li>남은 구간이 있으면 분석을 반복하는 조건부 흐름</li></ul></div>
+      <div class="card"><h4>React 대시보드</h4><ul class="dot">
+        <li><b>입력</b> 목표 길이 · 음량 · 얼굴 · 모션 가중치 · 분석 정밀도 · 프롬프트</li>
+        <li><b>확인</b> 신호 점수 · 후보 구간 · 최종 클립 · 메타데이터</li>
+        <li><b>시각화</b> 후보 구간별 점수 기여도와 최종 추출 구간 타임라인</li></ul></div>
+    </div>
+    <figure class="mt">
+      <div class="dg"><svg class="sv" viewBox="0 0 1000 372" role="img" aria-label="LangGraph 7개 노드 분석 흐름" style="min-width:760px"><rect x="14.0" y="24.0" width="196.0" height="52.0" rx="12" class="bx" /><text x="112.0" y="51.0" class="" font-size="14.5" font-weight="700" text-anchor="middle" dominant-baseline="middle" >1  초기 설정</text><line x1="210.0" y1="50.0" x2="260.0" y2="50.0" class="ln" marker-end="url(#ah)"/><rect x="264.0" y="24.0" width="196.0" height="52.0" rx="12" class="bx" /><text x="362.0" y="51.0" class="" font-size="14.5" font-weight="700" text-anchor="middle" dominant-baseline="middle" >2  신호 점수 계산</text><line x1="460.0" y1="50.0" x2="510.0" y2="50.0" class="ln" marker-end="url(#ah)"/><rect x="514.0" y="24.0" width="196.0" height="52.0" rx="12" class="bx" /><text x="612.0" y="51.0" class="" font-size="14.5" font-weight="700" text-anchor="middle" dominant-baseline="middle" >3  구간 준비</text><line x1="710.0" y1="50.0" x2="760.0" y2="50.0" class="ln" marker-end="url(#ah)"/><rect x="764.0" y="24.0" width="196.0" height="52.0" rx="12" class="bx-a" /><text x="862.0" y="51.0" class="" font-size="14.5" font-weight="700" text-anchor="middle" dominant-baseline="middle" >4  구간 분석</text><line x1="862.0" y1="76.0" x2="862.0" y2="128.0" class="ln" marker-end="url(#ah)"/><text x="872.0" y="102.0" class="t3" font-size="12" font-weight="600" text-anchor="start" dominant-baseline="middle" >AI 후보</text><rect x="764.0" y="132.0" width="196.0" height="52.0" rx="12" class="bx-a" /><text x="862.0" y="159.0" class="" font-size="14.5" font-weight="700" text-anchor="middle" dominant-baseline="middle" >5  상태 갱신</text><text x="862.0" y="198.0" class="t3" font-size="11.5" font-weight="500" text-anchor="middle" dominant-baseline="middle" >결과 저장 · 다음 구간으로</text><path d="M620,118 L690,158 L620,198 L550,158 Z" class="bx-s"/><text x="620.0" y="150.0" class="" font-size="13.5" font-weight="700" text-anchor="middle" dominant-baseline="middle" >남은 구간</text><text x="620.0" y="169.0" class="" font-size="13.5" font-weight="700" text-anchor="middle" dominant-baseline="middle" >있음?</text><line x1="764.0" y1="158.0" x2="694.0" y2="158.0" class="ln" marker-end="url(#ah)"/><path d="M620,198 L620,232 L984,232 L984,50 L964,50" class="ln-a" marker-end="url(#ah)"/><text x="800.0" y="222.0" class="acc-t" font-size="12.5" font-weight="700" text-anchor="middle" dominant-baseline="middle" >있음 → 다음 구간 분석</text><rect x="264.0" y="132.0" width="196.0" height="52.0" rx="12" class="bx" /><text x="362.0" y="159.0" class="" font-size="14.5" font-weight="700" text-anchor="middle" dominant-baseline="middle" >6  결과 통합</text><line x1="550.0" y1="158.0" x2="464.0" y2="158.0" class="ln" marker-end="url(#ah)"/><text x="507.0" y="146.0" class="t3" font-size="12" font-weight="600" text-anchor="middle" dominant-baseline="middle" >없음</text><rect x="14.0" y="132.0" width="196.0" height="52.0" rx="12" class="bx" /><text x="112.0" y="159.0" class="" font-size="14.5" font-weight="700" text-anchor="middle" dominant-baseline="middle" >7  최종 출력</text><line x1="264.0" y1="158.0" x2="214.0" y2="158.0" class="ln" marker-end="url(#ah)"/><rect x="14.0" y="262.0" width="970.0" height="96.0" rx="14" class="bx-s" /><text x="36.0" y="288.0" class="" font-size="14" font-weight="800" text-anchor="start" dominant-baseline="middle" >공유 상태</text><text x="962.0" y="288.0" class="t3" font-size="12" font-weight="500" text-anchor="end" dominant-baseline="middle" >모든 노드가 읽고 갱신</text><rect x="36.0" y="308.0" width="221.0" height="34.0" rx="8" class="bx" /><text x="146.5" y="325.5" class="t2" font-size="13" font-weight="600" text-anchor="middle" dominant-baseline="middle" >신호 점수</text><rect x="271.0" y="308.0" width="221.0" height="34.0" rx="8" class="bx" /><text x="381.5" y="325.5" class="t2" font-size="13" font-weight="600" text-anchor="middle" dominant-baseline="middle" >AI 후보</text><rect x="506.0" y="308.0" width="221.0" height="34.0" rx="8" class="bx" /><text x="616.5" y="325.5" class="t2" font-size="13" font-weight="600" text-anchor="middle" dominant-baseline="middle" >현재 구간 번호</text><rect x="741.0" y="308.0" width="221.0" height="34.0" rx="8" class="bx" /><text x="851.5" y="325.5" class="t2" font-size="13" font-weight="600" text-anchor="middle" dominant-baseline="middle" >처리 상태</text></svg></div>
+      <figcaption>LangGraph 분석 흐름 — 7개 노드</figcaption>
+    </figure>
+
+    <h3 class="sub"><span class="n">3.4</span>사례 분석</h3>
+    <div class="cases">
+      <div class="card case">
+        <div>
+          <span class="case-tag">사례 1 · 산학 · VLM 단독</span>
+          <p>3분 공연 영상 1편 · GT: 실제 방송 편집본</p>
+          <p style="margin-top:8px">예측한 3개 구간 중 <b>2개가 실제 편집 구간 안에</b> 위치해 의미 있는 장면은 잘 찾았습니다. 다만 구간이 서로 끊겨 있어, 이를 하나의 연속된 하이라이트로 잇는 <b>신호 융합과 후처리의 필요성</b>을 도출했습니다.</p>
+        </div>
+        <div class="dg flat"><svg class="sv" viewBox="0 0 560 190" role="img" aria-label="사례 1 정답 구간과 예측 구간 비교"><rect x="248.6" y="14.0" width="220.9" height="128.0" rx="6" class="band" /><text x="359.1" y="26.0" class="acc-t" font-size="12" font-weight="700" text-anchor="middle" dominant-baseline="middle" >정답 구간 38–85초</text><text x="60.0" y="58.0" class="t2" font-size="12.5" font-weight="600" text-anchor="end" dominant-baseline="middle" >정답 GT</text><rect x="70.0" y="44.0" width="470.0" height="28.0" rx="6" class="tok" /><rect x="248.6" y="44.0" width="220.9" height="28.0" rx="6" class="gt" /><text x="60.0" y="108.0" class="t2" font-size="12.5" font-weight="600" text-anchor="end" dominant-baseline="middle" >예측</text><rect x="70.0" y="94.0" width="470.0" height="28.0" rx="6" class="tok" /><rect x="164.0" y="94.0" width="47.0" height="28.0" rx="6" class="miss" /><text x="187.5" y="108.5" class="t2" font-size="11.5" font-weight="700" text-anchor="middle" dominant-baseline="middle" >20–30</text><rect x="258.0" y="94.0" width="47.0" height="28.0" rx="6" class="acc" /><text x="281.5" y="108.5" class="on-acc" font-size="11.5" font-weight="700" text-anchor="middle" dominant-baseline="middle" >40–50</text><rect x="399.0" y="94.0" width="47.0" height="28.0" rx="6" class="acc" /><text x="422.5" y="108.5" class="on-acc" font-size="11.5" font-weight="700" text-anchor="middle" dominant-baseline="middle" >70–80</text><line x1="70.0" y1="156.0" x2="540.0" y2="156.0" class="ax"/><line x1="70.0" y1="152.0" x2="70.0" y2="160.0" class="ax"/><text x="70.0" y="174.0" class="t3" font-size="11.5" font-weight="500" text-anchor="middle" dominant-baseline="middle" >0</text><line x1="164.0" y1="152.0" x2="164.0" y2="160.0" class="ax"/><text x="164.0" y="174.0" class="t3" font-size="11.5" font-weight="500" text-anchor="middle" dominant-baseline="middle" >20</text><line x1="258.0" y1="152.0" x2="258.0" y2="160.0" class="ax"/><text x="258.0" y="174.0" class="t3" font-size="11.5" font-weight="500" text-anchor="middle" dominant-baseline="middle" >40</text><line x1="352.0" y1="152.0" x2="352.0" y2="160.0" class="ax"/><text x="352.0" y="174.0" class="t3" font-size="11.5" font-weight="500" text-anchor="middle" dominant-baseline="middle" >60</text><line x1="446.0" y1="152.0" x2="446.0" y2="160.0" class="ax"/><text x="446.0" y="174.0" class="t3" font-size="11.5" font-weight="500" text-anchor="middle" dominant-baseline="middle" >80</text><line x1="540.0" y1="152.0" x2="540.0" y2="160.0" class="ax"/><text x="540.0" y="174.0" class="t3" font-size="11.5" font-weight="500" text-anchor="middle" dominant-baseline="middle" >100</text><text x="540.0" y="174.0" class="t3" font-size="11" font-weight="500" text-anchor="middle" dominant-baseline="middle" ></text></svg></div>
+      </div>
+      <div class="card case">
+        <div>
+          <span class="case-tag">사례 2 · 개인 · Hybrid</span>
+          <p>3분 공연 영상 1편 · GT: 원본 대비 편집본의 실제 사용 구간</p>
+          <p style="margin-top:8px">의미 분석과 다중 신호(오디오 · 얼굴 · 움직임) 융합으로 실제 편집 구간에 근접한 연속 하이라이트를 생성했습니다.</p>
+          <div class="mini">
+            <div class="kpi"><div class="v">87.5%</div><div class="l">Recall</div></div>
+            <div class="kpi"><div class="v">93.3%</div><div class="l">Precision</div></div>
+          </div>
+        </div>
+        <div class="dg flat"><svg class="sv" viewBox="0 0 560 190" role="img" aria-label="사례 2 정답 구간과 예측 구간 비교"><rect x="187.5" y="14.0" width="246.8" height="128.0" rx="6" class="band" /><text x="310.9" y="26.0" class="acc-t" font-size="12" font-weight="700" text-anchor="middle" dominant-baseline="middle" >겹치는 구간 20–62초</text><text x="60.0" y="58.0" class="t2" font-size="12.5" font-weight="600" text-anchor="end" dominant-baseline="middle" >정답 GT</text><rect x="70.0" y="44.0" width="470.0" height="28.0" rx="6" class="tok" /><rect x="187.5" y="44.0" width="282.0" height="28.0" rx="6" class="gt" /><text x="328.5" y="58.5" class="on-acc" font-size="11.5" font-weight="700" text-anchor="middle" dominant-baseline="middle" >20–68초</text><text x="60.0" y="108.0" class="t2" font-size="12.5" font-weight="600" text-anchor="end" dominant-baseline="middle" >예측</text><rect x="70.0" y="94.0" width="470.0" height="28.0" rx="6" class="tok" /><rect x="169.9" y="94.0" width="264.4" height="28.0" rx="6" class="acc" /><text x="302.1" y="108.5" class="on-acc" font-size="11.5" font-weight="700" text-anchor="middle" dominant-baseline="middle" >17–62초</text><line x1="70.0" y1="156.0" x2="540.0" y2="156.0" class="ax"/><line x1="70.0" y1="152.0" x2="70.0" y2="160.0" class="ax"/><text x="70.0" y="174.0" class="t3" font-size="11.5" font-weight="500" text-anchor="middle" dominant-baseline="middle" >0</text><line x1="187.5" y1="152.0" x2="187.5" y2="160.0" class="ax"/><text x="187.5" y="174.0" class="t3" font-size="11.5" font-weight="500" text-anchor="middle" dominant-baseline="middle" >20</text><line x1="305.0" y1="152.0" x2="305.0" y2="160.0" class="ax"/><text x="305.0" y="174.0" class="t3" font-size="11.5" font-weight="500" text-anchor="middle" dominant-baseline="middle" >40</text><line x1="422.5" y1="152.0" x2="422.5" y2="160.0" class="ax"/><text x="422.5" y="174.0" class="t3" font-size="11.5" font-weight="500" text-anchor="middle" dominant-baseline="middle" >60</text><line x1="540.0" y1="152.0" x2="540.0" y2="160.0" class="ax"/><text x="540.0" y="174.0" class="t3" font-size="11.5" font-weight="500" text-anchor="middle" dominant-baseline="middle" >80</text></svg></div>
+      </div>
+      <div class="card case">
+        <div>
+          <span class="case-tag">사례 3 · 정성 평가</span>
+          <h5 style="margin-top:4px">클로즈업된 장면 위주로 편집</h5>
+          <p>얼굴 신호에 가장 큰 가중치를 부여하고 ‘클로즈업된 장면 중심’ 프롬프트를 입력해, 인물의 얼굴이 크게 보이는 장면이 집중적으로 반영된 하이라이트를 출력했습니다.</p>
+        </div>
+        <div class="dg flat"><svg class="sv" viewBox="0 0 560 200" role="img" aria-label="사례 3 원본과 결과 영상의 클로즈업 장면 분포"><text x="80.0" y="38.0" class="" font-size="14" font-weight="800" text-anchor="end" dominant-baseline="middle" >원본</text><text x="80.0" y="57.0" class="t3" font-size="11.5" font-weight="500" text-anchor="end" dominant-baseline="middle" >198.9초</text><rect x="92.0" y="30.0" width="448.0" height="36.0" rx="6" class="tok" /><rect x="93.3" y="30.0" width="11.6" height="36.0" rx="2" class="acc" /><rect x="117.4" y="30.0" width="6.2" height="36.0" rx="2" class="acc" /><rect x="130.7" y="30.0" width="4.9" height="36.0" rx="2" class="acc" /><rect x="141.8" y="30.0" width="4.0" height="36.0" rx="2" class="acc" /><rect x="161.4" y="30.0" width="7.1" height="36.0" rx="2" class="acc" /><rect x="187.7" y="30.0" width="5.8" height="36.0" rx="2" class="acc" /><rect x="202.8" y="30.0" width="8.9" height="36.0" rx="2" class="acc" /><rect x="223.2" y="30.0" width="5.8" height="36.0" rx="2" class="acc" /><rect x="250.8" y="30.0" width="4.0" height="36.0" rx="2" class="acc" /><rect x="274.8" y="30.0" width="5.8" height="36.0" rx="2" class="acc" /><rect x="297.1" y="30.0" width="4.0" height="36.0" rx="2" class="acc" /><rect x="320.7" y="30.0" width="3.6" height="36.0" rx="2" class="acc" /><rect x="345.6" y="30.0" width="4.4" height="36.0" rx="2" class="acc" /><rect x="427.4" y="30.0" width="5.8" height="36.0" rx="2" class="acc" /><rect x="473.3" y="30.0" width="5.8" height="36.0" rx="2" class="acc" /><rect x="489.3" y="30.0" width="8.9" height="36.0" rx="2" class="acc" /><text x="80.0" y="104.0" class="" font-size="14" font-weight="800" text-anchor="end" dominant-baseline="middle" >결과</text><text x="80.0" y="123.0" class="t3" font-size="11.5" font-weight="500" text-anchor="end" dominant-baseline="middle" >45.0초</text><rect x="92.0" y="96.0" width="448.0" height="36.0" rx="6" class="tok" /><rect x="93.3" y="96.0" width="39.6" height="36.0" rx="2" class="acc" /><rect x="157.0" y="96.0" width="31.6" height="36.0" rx="2" class="acc" /><rect x="253.9" y="96.0" width="22.2" height="36.0" rx="2" class="acc" /><rect x="293.5" y="96.0" width="49.8" height="36.0" rx="2" class="acc" /><rect x="361.6" y="96.0" width="51.6" height="36.0" rx="2" class="acc" /><rect x="449.7" y="96.0" width="43.2" height="36.0" rx="2" class="acc" /><rect x="502.6" y="96.0" width="31.6" height="36.0" rx="2" class="acc" /><line x1="92.0" y1="152.0" x2="540.0" y2="152.0" class="ax"/><line x1="92.0" y1="148.0" x2="92.0" y2="156.0" class="ax"/><text x="92.0" y="170.0" class="t3" font-size="11.5" font-weight="500" text-anchor="middle" dominant-baseline="middle" >0%</text><line x1="204.0" y1="148.0" x2="204.0" y2="156.0" class="ax"/><text x="204.0" y="170.0" class="t3" font-size="11.5" font-weight="500" text-anchor="middle" dominant-baseline="middle" >25%</text><line x1="316.0" y1="148.0" x2="316.0" y2="156.0" class="ax"/><text x="316.0" y="170.0" class="t3" font-size="11.5" font-weight="500" text-anchor="middle" dominant-baseline="middle" >50%</text><line x1="428.0" y1="148.0" x2="428.0" y2="156.0" class="ax"/><text x="428.0" y="170.0" class="t3" font-size="11.5" font-weight="500" text-anchor="middle" dominant-baseline="middle" >75%</text><line x1="540.0" y1="148.0" x2="540.0" y2="156.0" class="ax"/><text x="540.0" y="170.0" class="t3" font-size="11.5" font-weight="500" text-anchor="middle" dominant-baseline="middle" >100%</text><rect x="92.0" y="184.0" width="12.0" height="12.0" rx="2" class="acc" /><text x="110.0" y="190.5" class="t2" font-size="12" font-weight="600" text-anchor="start" dominant-baseline="middle" >클로즈업 장면</text><text x="540.0" y="190.5" class="t3" font-size="11.5" font-weight="500" text-anchor="end" dominant-baseline="middle" >영상 길이 대비 위치</text></svg></div>
+      </div>
+    </div>
+    <p class="disclaimer">산학 과제와 개인 연구는 서로 다른 영상으로 수행되어 결과를 직접 비교하지 않았으며, 각 사례에 대한 정성적 검증입니다. 개인 연구에서는 산학 과제 데이터 대신 별도의 공개 영상을 사용했으며, 포트폴리오에는 영상 원본 및 생성 결과를 포함하지 않았습니다.</p>
+
+    <h3 class="sub"><span class="n">3.5</span>Tech Stack</h3>
+    <div class="stack-list">
+      <div class="stack-row"><b>AI / ML</b><div class="pills"><span>Hugging Face Transformers</span><span>Qwen2.5-Omni</span><span>VideoLLaMA 2</span></div></div>
+      <div class="stack-row"><b>Video / Signal</b><div class="pills"><span>FFmpeg</span><span>OpenCV (Farneback Optical Flow)</span><span>MediaPipe</span><span>Audio RMS</span></div></div>
+      <div class="stack-row"><b>Backend / Workflow</b><div class="pills"><span>FastAPI</span><span>LangGraph</span><span>BackgroundTasks</span><span>Polling API</span><span>React</span></div></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap"><p class="copy">© 2026. All rights reserved.</p></div>
+</footer>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="이미지 크게 보기">
+  <button type="button" aria-label="닫기">×</button>
+  <img alt="">
+  <p></p>
+</div>
+
+<script>
+(function(){
+  var lb = document.getElementById('lb'), lbImg = lb.querySelector('img'), lbCap = lb.querySelector('p');
+  var icon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg>';
+  document.querySelectorAll('.shot').forEach(function(shot){
+    var img = shot.querySelector('img'); if(!img) return;
+    var badge = document.createElement('span'); badge.className = 'zoom'; badge.innerHTML = icon + '크게 보기';
+    shot.appendChild(badge);
+    shot.setAttribute('tabindex','0'); shot.setAttribute('role','button');
+    shot.setAttribute('aria-label', (img.alt || '이미지') + ' 크게 보기');
+    function open(){
+      var fig = shot.closest('figure'), cap = fig && fig.querySelector('figcaption');
+      lbImg.src = img.src; lbImg.alt = img.alt; lbCap.textContent = cap ? cap.textContent : img.alt;
+      lb.classList.add('on'); document.body.classList.add('lb-open');
+    }
+    shot.addEventListener('click', open);
+    shot.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); open(); } });
+  });
+  function close(){ lb.classList.remove('on'); document.body.classList.remove('lb-open'); }
+  lb.addEventListener('click', close);
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') close(); });
+})();
+</script>
+</body>
+</html>
